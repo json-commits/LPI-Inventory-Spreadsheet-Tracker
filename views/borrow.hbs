@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html x-data="{colorMode: localStorage.getItem('colorMode') || localStorage.setItem('colorMode', 'light')}" x-init="$watch('colorMode', val => localStorage.setItem('colorMode', val))" x-bind:class="{'dark': colorMode === 'dark' || (colorMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>borrow - express-firebase</title>
+  <meta name="description" content="" />
+  <link rel="icon" type="image/x-icon" href="https://ik.imagekit.io/n0uvizrukm2/websites/chai-cloud/Vector__2__H9Chm1ngK.svg">
+  <meta property="og:title" content="borrow - express-firebase" />
+  <meta property="og:image" content="" />
+
+  <link id="heading-font" rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" media="all" />
+  <link rel="stylesheet" href="./stylesheets/borrow.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+</head>
+
+<body x-data="{'openDialogId': ''}" x-on:keydown.escape="openDialogId=''" class="font-body antialiased text-[#41454c] bg-[#FFFFFF] dark:text-[#b3c3d9] dark:bg-[#000000]">
+  <div class="px-4 py-16 sm:px-6 lg:px-8">
+    <div class="max-w-lg mx-auto sm:max-w-md">
+      <form class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl dark:shadow-slate-800">
+        <p class="text-lg font-medium text-center">{{message}}</p>
+      </form>
+    </div>
+  </div>
+  <!-- AlpineJS Library -->
+  <script defer src="https://unpkg.com/alpinejs@3.9.0/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      offset: 50,
+      duration: 800
+    });
+  </script>
+
+
+</body>
+
+</html>
