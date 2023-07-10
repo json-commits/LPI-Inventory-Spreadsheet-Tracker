@@ -17,8 +17,6 @@ router.post('/borrow', async function (req, res, next) {
     const item = req.body.item;
     const name = req.body.name;
 
-    await sheets.appendRangeData(`Logs!A:C`, ['=lambda(x,x)(now())', name, item]);
-
     let itemData = await sheets.getRangeData('ItemList!A:B');
     let itemValues = itemData.data.values;
     // let itemData = await sheets.getRangeData('ItemList!A:B').data.values[0];
@@ -29,9 +27,11 @@ router.post('/borrow', async function (req, res, next) {
     let itemStatus = itemValues.map(x => x[1])[foundItemIndex];
     if (itemStatus === 'AVAILABLE') {
         await sheets.setRangeData(`ItemList!B${foundItemIndex + 1}`, ['BORROWED']);
+        await sheets.appendRangeData(`Logs!A:C`, ['=lambda(x,x)(now())', name, item, 'BORROW']);
         res.render('borrow', {title: `Borrowing: ${name}`, message: `Borrowed ${item}`});
     } else {
         await sheets.setRangeData(`ItemList!B${foundItemIndex + 1}`, ['AVAILABLE']);
+        await sheets.appendRangeData(`Logs!A:C`, ['=lambda(x,x)(now())', name, item, 'RETURN']);
         res.render('borrow', {title: `Returning: ${name}`, message: `Returned ${item}`});
     }
 
