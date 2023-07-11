@@ -28,35 +28,61 @@
 
 <script>
     function inputValidation() {
-        let input = document.getElementsByTagName('input')[0].value;
-        document.getElementsByTagName('button')[0].disabled = input === '';
+        let buttonList = document.getElementsByTagName('button');
+
+        let name = document.getElementById('name-input').value;
+        let quantity = Number(document.getElementById('quantity-input').value);
+        if(name === "" || quantity < 1 || isNaN(quantity) || quantity === 0){
+            for (let buttonListElement of buttonList) {
+                buttonListElement.disabled = true;
+            }
+            return false;
+        }
+
+        let itemAvailableQuantity = {{itemAvailableQuantity}};
+        let itemBorrowedQuantity = {{itemBorrowedQuantity}};
+
+        document.getElementById('borrowButton').disabled = quantity > itemAvailableQuantity;
+
+        document.getElementById('returnButton').disabled = quantity > itemBorrowedQuantity;
     }
 </script>
 
 <div class="px-4 py-16 sm:px-6 lg:px-8">
     <div class="max-w-lg mx-auto sm:max-w-md">
-        <form class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl dark:shadow-slate-800" action="/borrow" method="post">
+        <form class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl dark:shadow-slate-800">
             <p class="text-lg font-medium">Item:</p>
             <p class="text-lg font-medium text-center">{{item}}</p>
             <form class="flex flex-col gap-y-3">
+                <input type="hidden" name="item" value="{{item}}">
+                <input type="hidden" name="foundItemIndex" value="{{foundItemIndex}}">
+                <input type="hidden" name="itemAvailableQuantity" value="{{itemAvailableQuantity}}">
+                <input type="hidden" name="itemBorrowedQuantity" value="{{itemBorrowedQuantity}}">
+
                 <div class=""><label class="text-sm font-medium">
                     <p class="">Name:</p>
                 </label>
-                    <label>
-                        <input name="item" hidden value="{{item}}"/>
-                    </label>
-                    <div class="relative mt-1">
-                        <label>
-                            <input name="name" oninput="inputValidation()" autofocus
-                                   class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"/>
-                        </label>
-                    </div>
+                    <div class="relative mt-1"><label class="">
+                        <input class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
+                               name="name" placeholder="" id="name-input" oninput="inputValidation()"/></label></div>
                 </div>
-                <button disabled
-                        class="block w-full px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global mt-3 hover:bg-primary-700 disabled:bg-gray-500"
-                        type="submit">
-                    Submit
-                </button>
+                <div class=""><label class="text-sm font-medium">
+                    <p class="">Quantity:</p>
+                </label>
+                    <div class="relative mt-1"><label class="">
+                        <input class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
+                               name="quantity" placeholder="" id="quantity-input" oninput="inputValidation()"/></label></div>
+                </div>
+                <div class="flex justify-evenly gap-[5px]">
+                    <button disabled formaction="/borrow" id="borrowButton" formmethod="post"
+                            class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 w-[45%] mb-3">
+                        Borrow
+                    </button>
+                    <button disabled formaction="/return"  id="returnButton" formmethod="post"
+                            class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 w-[45%] mb-3">
+                        Return
+                    </button>
+                </div>
             </form>
         </form>
     </div>
@@ -70,6 +96,8 @@
         duration: 800
     });
 </script>
+
+
 </body>
 
 </html>

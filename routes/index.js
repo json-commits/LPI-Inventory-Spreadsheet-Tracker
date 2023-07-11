@@ -5,37 +5,56 @@ var sheets = require('../models/sheets');
 sheets.authorize().catch(error => console.log(error));
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
+    const item = req.query['name'];
+
+    let itemData = await sheets.getRangeData('ItemList!A:D');
+    let itemValues = itemData.data.values;
+    let itemName = itemValues.map(x => x[0]);
+    let request = element => element === item;
+    let foundItemIndex = itemName.findIndex(request);
+
+    let itemAvailableQuantity = itemValues.map(x => x[1])[foundItemIndex];
+    let itemBorrowedQuantity = itemValues.map(x => x[2])[foundItemIndex];
+
+
+
     res.render('index',
         {
-            title: `Item: ${req.query['name']}`,
-            item: `${req.query['name']}`,
+            title: `Item: ${item}`,
+            item: `${item}`,
+            itemAvailableQuantity: `${itemAvailableQuantity}`,
+            itemBorrowedQuantity: `${itemBorrowedQuantity}`,
+            foundItemIndex: `${foundItemIndex}`,
         });
 });
 
 router.post('/borrow', async function (req, res, next) {
     const item = req.body.item;
     const name = req.body.name;
+    const quantity = Number(req.body.quantity);
+    const foundItemIndex = Number(req.body.foundItemIndex) + 1;
+    const itemBorrowedQuantity = Number(req.body.itemBorrowedQuantity);
 
-    let itemData = await sheets.getRangeData('ItemList!A:B');
-    let itemValues = itemData.data.values;
-    // let itemData = await sheets.getRangeData('ItemList!A:B').data.values[0];
-    let itemName = itemValues.map(x => x[0]);
-    let request = element => element === item;
-    let foundItemIndex = itemName.findIndex(request);
+    console.log(`ItemList!C${foundItemIndex}`)
+    await sheets.setRangeData(`ItemList!C${foundItemIndex}`, [itemBorrowedQuantity + quantity]);
+    await sheets.appendRangeData(`Logs!A1:C1`, ['=lambda(x,x)(now())', name, item, 'BORROW', quantity]);
 
-    let itemStatus = itemValues.map(x => x[1])[foundItemIndex];
-    if (itemStatus === 'AVAILABLE') {
-        await sheets.setRangeData(`ItemList!B${foundItemIndex + 1}`, ['BORROWED']);
-        await sheets.appendRangeData(`Logs!A:C`, ['=lambda(x,x)(now())', name, item, 'BORROW']);
-        res.render('borrow', {title: `Borrowing: ${name}`, message: `Borrowed ${item}`});
-    } else {
-        await sheets.setRangeData(`ItemList!B${foundItemIndex + 1}`, ['AVAILABLE']);
-        await sheets.appendRangeData(`Logs!A:C`, ['=lambda(x,x)(now())', name, item, 'RETURN']);
-        res.render('borrow', {title: `Returning: ${name}`, message: `Returned ${item}`});
-    }
+    res.render('submit', {message: `Borrowed ${item} x ${quantity}`})
+});
 
+router.post('/return', async function (req, res, next) {
+    const item = req.body.item;
+    const name = req.body.name;
+    const quantity = Number(req.body.quantity);
+    const foundItemIndex = Number(req.body.foundItemIndex) + 1;
+    const itemBorrowedQuantity = Number(req.body.itemBorrowedQuantity);
 
+    console.log(`ItemList!C${foundItemIndex}`);
+    await sheets.setRangeData(`ItemList!C${foundItemIndex}`, [itemBorrowedQuantity - quantity]);
+    await sheets.appendRangeData(`Logs!A1:C1`, ['=lambda(x,x)(now())', name, item, 'RETURN', quantity]);
+
+    res.render('submit', {message: `Returned ${item} x ${quantity}`});
 });
 
 module.exports = router;
