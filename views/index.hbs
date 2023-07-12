@@ -23,7 +23,7 @@
 
 </head>
 
-<body x-data="{'openDialogId': ''}" x-on:keydown.escape="openDialogId=''"
+<body x-data="{'openDialogId': ''}" x-on:keydown.escape="openDialogId=''" onpageshow="inputValidation()"
       class="font-body antialiased text-[#41454c] bg-[#FFFFFF] dark:text-[#b3c3d9] dark:bg-[#000000]">
 
 <script>
@@ -58,6 +58,7 @@
                 <input type="hidden" name="foundItemIndex" value="{{foundItemIndex}}">
                 <input type="hidden" name="itemAvailableQuantity" value="{{itemAvailableQuantity}}">
                 <input type="hidden" name="itemBorrowedQuantity" value="{{itemBorrowedQuantity}}">
+                <input type="hidden" name="itemList" value="{{itemList}}">
 
                 <div class=""><label class="text-sm font-medium">
                     <p class="">Name:</p>
@@ -66,12 +67,14 @@
                         <input class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
                                name="name" placeholder="" id="name-input" oninput="inputValidation()"/></label></div>
                 </div>
-                <div class=""><label class="text-sm font-medium">
+                <div {{#if quantityValue}} hidden {{/if}} class=""><label class="text-sm font-medium">
                     <p class="">Quantity:</p>
                 </label>
                     <div class="relative mt-1"><label class="">
                         <input class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
-                               name="quantity" placeholder="" id="quantity-input" oninput="inputValidation()"/></label></div>
+                               name="quantity" placeholder="" id="quantity-input" oninput="inputValidation()"
+                               value="{{quantityValue}}"
+                        /></label></div>
                 </div>
                 <div class="flex justify-evenly gap-[5px]">
                     <button disabled formaction="/borrow" id="borrowButton" formmethod="post"
