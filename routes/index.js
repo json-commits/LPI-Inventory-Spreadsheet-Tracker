@@ -6,7 +6,7 @@ sheets.authorize().catch(error => console.log(error));
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-    let itemList, item, isPPE;
+    let itemList, item, isPPE = '';
     item = req.query['name'];
     let quantityValue = ``;
     if(item){

@@ -77,16 +77,26 @@
                                value="{{quantityValue}}"
                         /></label></div>
                 </div>
-                <div class="flex justify-evenly gap-[5px]">
-                    <button disabled formaction="/borrow" id="borrowButton" formmethod="post"
-                            class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 w-[45%] mb-3">
-                        Borrow
-                    </button>
-                    <button disabled formaction="/return"  id="returnButton" formmethod="post"
-                            class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 w-[45%] mb-3">
-                        Return
-                    </button>
-                </div>
+                {{#if isPPE}}
+                    <div class="flex justify-evenly gap-[5px]">
+                        <button class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 mb-3 w-full">
+                            Release
+                        </button>
+                    </div>
+                {{else}}
+                    <div class="flex justify-evenly gap-[5px]">
+                        <button disabled formaction="/borrow" id="borrowButton" formmethod="post"
+                                class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 w-[45%] mb-3">
+                            Borrow
+                        </button>
+                        <button disabled formaction="/return"  id="returnButton" formmethod="post"
+                                class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 w-[45%] mb-3">
+                            Return
+                        </button>
+                    </div>
+                {{/if}}
+
+
             </form>
         </form>
     </div>
