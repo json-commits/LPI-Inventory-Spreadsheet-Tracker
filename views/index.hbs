@@ -27,7 +27,7 @@
       class="font-body antialiased text-[#41454c] bg-[#FFFFFF] dark:text-[#b3c3d9] dark:bg-[#000000]">
 
 <script>
-    function inputValidation() {
+    async function inputValidation() {
         let buttonList = document.getElementsByTagName('button');
 
         let name = document.getElementById('name-input').value;
@@ -42,9 +42,14 @@
         let itemAvailableQuantity = {{itemAvailableQuantity}};
         let itemBorrowedQuantity = {{itemBorrowedQuantity}};
 
-        document.getElementById('borrowButton').disabled = quantity > itemAvailableQuantity;
+        {{#if isPPE}}
+            document.getElementById('releaseButton').disabled = quantity > itemAvailableQuantity
 
-        document.getElementById('returnButton').disabled = quantity > itemBorrowedQuantity;
+        {{else}}
+            document.getElementById('borrowButton').disabled = quantity > itemAvailableQuantity
+            document.getElementById('returnButton').disabled = quantity > itemBorrowedQuantity
+
+        {{/if}}
     }
 </script>
 
@@ -59,7 +64,6 @@
                 <input type="hidden" name="itemAvailableQuantity" value="{{itemAvailableQuantity}}">
                 <input type="hidden" name="itemBorrowedQuantity" value="{{itemBorrowedQuantity}}">
                 <input type="hidden" name="itemList" value="{{itemList}}">
-                <input type="hidden" name="isPPE" value="{{isPPE}}">
 
                 <div class=""><label class="text-sm font-medium">
                     <p class="">Name:</p>
@@ -79,7 +83,8 @@
                 </div>
                 {{#if isPPE}}
                     <div class="flex justify-evenly gap-[5px]">
-                        <button class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 mb-3 w-full">
+                        <button id="releaseButton" formaction="/release" formmethod="post"
+                                class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 mb-3 w-full">
                             Release
                         </button>
                     </div>

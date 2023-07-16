@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html x-data="{colorMode: localStorage.getItem('colorMode') || localStorage.setItem('colorMode', 'light')}"
+      x-init="$watch('colorMode', val => localStorage.setItem('colorMode', val))"
+      x-bind:class="{'dark': colorMode === 'dark' || (colorMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
+      class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add - express-firebase</title>
+    <meta name="description" content=""/>
+    <link rel="icon" type="image/x-icon"
+          href="https://ik.imagekit.io/n0uvizrukm2/websites/chai-cloud/Vector__2__H9Chm1ngK.svg">
+    <meta property="og:title" content="add - express-firebase"/>
+    <meta property="og:image" content=""/>
+
+    <link id="heading-font" rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap"
+          media="all"/>
+    <link rel="stylesheet" href="./stylesheets/add.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+
+
+</head>
+
+<body x-data="{'openDialogId': ''}" x-on:keydown.escape="openDialogId=''" onpageshow="serialValidation()"
+      class="font-body antialiased text-[#41454c] bg-[#FFFFFF] dark:text-[#b3c3d9] dark:bg-[#000000]">
+
+<script>
+    function serialValidation() {
+        inputValidation();
+        const itemCategory = document.getElementById("itemCategory").value;
+        const serialDivElement = document.getElementById("serialDiv");
+        const serialInputElement = document.getElementById("serialInput");
+        if (itemCategory !== "SerialItemList") {
+            serialDivElement.hidden = true;
+            serialInputElement.disabled = true;
+            serialInputElement.value = "";
+            inputValidation();
+            return false;
+        }
+        serialDivElement.hidden = false;
+        serialInputElement.disabled = false;
+        inputValidation();
+    }
+    function inputValidation(){
+        const inputElements = document.getElementsByTagName('input');
+        const submitButtonElement = document.getElementById("submitButton");
+        let isInputValid = true;
+        for (let element of inputElements) {
+            if (element.id === "quantityInput"){
+                let elementValue = Number(element.value);
+                if (elementValue <= 0 || isNaN(elementValue)){
+                    isInputValid = false;
+                    break;
+                }
+            }
+            if (element.value === "") {
+                if(element.disabled === true){
+                    continue;
+                }
+                isInputValid = false;
+                break;
+            }
+        }
+        submitButtonElement.disabled = !isInputValid;
+    }
+</script>
+
+<div class="px-4 py-16 sm:px-6 lg:px-8">
+    <div class="max-w-lg mx-auto sm:max-w-md">
+        <form class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl dark:shadow-slate-800" method="post" action="/add">
+            <form class="flex flex-col gap-y-3">
+                <div class=""><label class="text-sm font-medium">
+                    <p class="">Item Name:</p>
+                </label>
+                    <div class="relative mt-1"><label class="">
+                        <input
+                                oninput="inputValidation()"
+                                class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
+                                name="name" placeholder=""/>
+                    </label>
+                    </div>
+                </div>
+                <div class=""><label class="text-sm font-medium">
+                    <p class="">Item Category:</p>
+                </label>
+                    <div class="relative mt-1"><label class="">
+                        <select name="category" id="itemCategory" oninput="serialValidation()"
+                                class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global
+                                dark:bg-slate-900 dark:border-gray-700"
+                        >
+                            <option value="GenericItemList">Generic Item</option>
+                            <option value="SerialItemList">Specific Item</option>
+                            <option value="PPEItemList">PPE</option>
+                        </select></label></div>
+                </div>
+                <div hidden id="serialDiv" class=""><label class="text-sm font-medium">
+                    <p class="">Serial Number:</p>
+                </label>
+                    <div class="relative mt-1"><label class=""><input
+                            oninput="inputValidation()" disabled
+                            class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
+                            name="serial" placeholder="" id="serialInput"
+                    /></label></div>
+                </div>
+                <div class=""><label class="text-sm font-medium">
+                    <p class="">Quantity:</p>
+                </label>
+                    <div class="relative mt-1"><label class=""><input
+                            oninput="inputValidation()" id="quantityInput"
+                            class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
+                            name="quantity" placeholder=""/></label></div>
+                </div>
+                <div class="flex justify-evenly gap-[5px]">
+                    <button id="submitButton" disabled type="submit"
+                            class="block px-5 py-3 text-sm font-medium text-white bg-primary-500 rounded-global hover:bg-primary-700 disabled:bg-gray-500 mb-3 w-full">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </form>
+    </div>
+</div>
+<!-- AlpineJS Library -->
+<script defer src="https://unpkg.com/alpinejs@3.9.0/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        offset: 50,
+        duration: 800
+    });
+</script>
+
+
+</body>
+
+</html>
