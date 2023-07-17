@@ -9,22 +9,19 @@ router.get('/', async function (req, res, next) {
     let itemList, item, isPPE = '';
     item = req.query['name'];
     let quantityValue = ``;
-    if(item){
+    if (item) {
         itemList = 'GenericItemList'
-    }
-    else{
+    } else {
         item = req.query['serialNumber'];
-        if(item){
+        if (item) {
             itemList = 'SerialItemList'
             quantityValue = '1';
-        }
-        else{
+        } else {
             item = req.query['ppe'];
             itemList = 'PPEItemList'
             isPPE = true;
         }
     }
-
 
 
     let itemData = await sheets.getRangeData(`${itemList}!B:D`);
@@ -35,7 +32,6 @@ router.get('/', async function (req, res, next) {
 
     let itemAvailableQuantity = itemValues.map(x => x[1])[foundItemIndex];
     let itemBorrowedQuantity = itemValues.map(x => x[2])[foundItemIndex];
-
 
 
     res.render('index',
@@ -65,7 +61,7 @@ router.post('/borrow', async function (req, res, next) {
         ['=lambda(x,x)(now())', name, item, itemList, 'BORROW', quantity]);
 
     res.render('submit', {message: `Borrowed ${item} x ${quantity}`})
-    });
+});
 
 router.post('/release', async function (req, res, next) {
     const item = req.body.item;
@@ -123,7 +119,6 @@ router.get('/add', async function (req, res, next) {
 //     }
 // });
 
-// TODO: Fix add items
 router.post('/add', async function (req, res, next) {
     console.log(req.body);
 
@@ -136,42 +131,39 @@ router.post('/add', async function (req, res, next) {
     let itemData = await sheets.getRangeData(`${itemList}!A:E`);
     let itemValues = itemData.data.values;
     let itemName, request, foundItemIndex;
-    if(itemSerial === undefined) {
+    if (itemSerial === undefined) {
         itemName = itemValues.map(x => x[1]);
         request = element => element === item;
         foundItemIndex = itemName.findIndex(request);
-        if(foundItemIndex === -1){
+        if (foundItemIndex === -1) {
             let linkName = 'name'
-            if(itemList === 'PPEItemList'){
+            if (itemList === 'PPEItemList') {
                 linkName = 'ppe'
             }
             await sheets.appendRangeData(`${itemList}!A1:C1`,
                 ['', item, '=IF(ISBLANK(INDIRECT(CONCAT("B", ROW()))), "", INDIRECT(CONCAT("E", ROW()))-INDIRECT(CONCAT("D", ROW())))', 0, itemQuantity, '',
                     `=IF(ISBLANK(INDIRECT(CONCAT("B", ROW()))), "", HYPERLINK(CONCAT("https://lpi-qr-inventory.onrender.com/?${linkName}=",INDIRECT(CONCAT("B", ROW())))))`]
             );
-        }
-        else{
+        } else {
             await sheets.setRangeData(`${itemList}!E${foundItemIndex + 1}`,
                 [Number(itemValues[foundItemIndex][4]) + itemQuantity]);
         }
         await sheets.appendRangeData(`Logs!A1:C1`,
             ['=lambda(x,x)(now())', 'ADMIN', item, itemList, 'ADD', itemQuantity]);
-    }
-    else{
+    } else {
         itemName = itemValues.map(x => x[1]);
         request = element => element === itemSerial;
         foundItemIndex = itemName.findIndex(request);
-        if(foundItemIndex === -1){
+        if (foundItemIndex === -1) {
             await sheets.appendRangeData(`${itemList}!A1:C1`,
                 [item, itemSerial, '=INDIRECT(CONCAT("E",row()))-INDIRECT(CONCAT("D",row()))', 0, '1',
-                    'IF(ISBLANK(INDIRECT(CONCAT("B",row())), "", IF(INDIRECT(CONCAT("C",row())<1, "BORROWED", "AVAILABLE"))', '',
-                    '=IF(ISBLANK(INDIRECT(CONCAT("B",row())), "", HYPERLINK(CONCAT("https://lpi-qr-inventory.onrender.com/?serialNumber=",INDIRECT(CONCAT("B",row()))))'
+                    '=IF(ISBLANK(INDIRECT(CONCAT("B", ROW()))),"", IF(INDIRECT(CONCAT("C", ROW()))<1, "BORROWED", "AVAILABLE"))', '',
+                    '=IF(ISBLANK(INDIRECT(CONCAT("B", ROW()))),"", HYPERLINK(CONCAT("https://lpi-qr-inventory.onrender.com/?serialNumber=",INDIRECT(CONCAT("B", ROW())))))'
                 ]
             );
             await sheets.appendRangeData(`Logs!A1:C1`,
                 ['=lambda(x,x)(now())', 'ADMIN', item, itemList, 'ADD', itemQuantity]);
-        }
-        else{
+        } else {
             res.render('submit', {message: `Item already exists!`})
         }
     }

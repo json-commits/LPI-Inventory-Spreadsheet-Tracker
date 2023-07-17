@@ -32,31 +32,36 @@
         const itemCategory = document.getElementById("itemCategory").value;
         const serialDivElement = document.getElementById("serialDiv");
         const serialInputElement = document.getElementById("serialInput");
+        const quantityInputElement = document.getElementById("quantityInput");
         if (itemCategory !== "SerialItemList") {
             serialDivElement.hidden = true;
             serialInputElement.disabled = true;
             serialInputElement.value = "";
+            quantityInputElement.disabled = false;
             inputValidation();
             return false;
         }
         serialDivElement.hidden = false;
         serialInputElement.disabled = false;
+        quantityInputElement.value = 1;
+        quantityInputElement.disabled = true;
         inputValidation();
     }
-    function inputValidation(){
+
+    function inputValidation() {
         const inputElements = document.getElementsByTagName('input');
         const submitButtonElement = document.getElementById("submitButton");
         let isInputValid = true;
         for (let element of inputElements) {
-            if (element.id === "quantityInput"){
+            if (element.id === "quantityInput") {
                 let elementValue = Number(element.value);
-                if (elementValue <= 0 || isNaN(elementValue)){
+                if (elementValue <= 0 || isNaN(elementValue)) {
                     isInputValid = false;
                     break;
                 }
             }
             if (element.value === "") {
-                if(element.disabled === true){
+                if (element.disabled === true) {
                     continue;
                 }
                 isInputValid = false;
@@ -71,6 +76,9 @@
     <div class="max-w-lg mx-auto sm:max-w-md">
         <form class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl dark:shadow-slate-800" method="post" action="/add">
             <form class="flex flex-col gap-y-3">
+                <label class="font-medium text-[22px] text-center">
+                    <p>ADD NEW ITEM</p>
+                </label>
                 <div class=""><label class="text-sm font-medium">
                     <p class="">Item Name:</p>
                 </label>
