@@ -51,6 +51,7 @@ router.post('/borrow', async function (req, res, next) {
     const item = req.body.item;
     const itemList = req.body.itemList;
     const name = req.body.name;
+    const region = req.body.region;
     const quantity = Number(req.body.quantity);
     const foundItemIndex = Number(req.body.foundItemIndex) + 1;
     const itemBorrowedQuantity = Number(req.body.itemBorrowedQuantity);
@@ -58,7 +59,7 @@ router.post('/borrow', async function (req, res, next) {
     await sheets.setRangeData(`${itemList}!D${foundItemIndex}`, [itemBorrowedQuantity + quantity]);
 
     await sheets.appendRangeData(`Logs!A1:C1`,
-        ['=lambda(x,x)(now())', name, item, itemList, 'BORROW', quantity]);
+        ['=lambda(x,x)(now())', name, region, item, itemList, 'BORROW', quantity]);
 
     res.render('submit', {message: `Borrowed ${item} x ${quantity}`})
 });
@@ -67,13 +68,14 @@ router.post('/release', async function (req, res, next) {
     const item = req.body.item;
     const itemList = req.body.itemList;
     const name = req.body.name;
+    const region = req.body.region;
     const quantity = Number(req.body.quantity);
     const foundItemIndex = Number(req.body.foundItemIndex) + 1;
     const itemAvailableQuantity = Number(req.body.itemAvailableQuantity);
 
     await sheets.setRangeData(`${itemList}!E${foundItemIndex}`, [itemAvailableQuantity - quantity]);
     await sheets.appendRangeData(`Logs!A1:C1`,
-        ['=lambda(x,x)(now())', name, item, itemList, 'RELEASE', quantity]);
+        ['=lambda(x,x)(now())', name, region, item, itemList, 'RELEASE', quantity]);
 
     res.render('submit', {message: `Released ${item} x ${quantity}`});
 });
@@ -82,13 +84,14 @@ router.post('/return', async function (req, res, next) {
     const item = req.body.item;
     const itemList = req.body.itemList;
     const name = req.body.name;
+    const region = req.body.region;
     const quantity = Number(req.body.quantity);
     const foundItemIndex = Number(req.body.foundItemIndex) + 1;
     const itemBorrowedQuantity = Number(req.body.itemBorrowedQuantity);
 
     await sheets.setRangeData(`${itemList}!D${foundItemIndex}`, [itemBorrowedQuantity - quantity]);
     await sheets.appendRangeData(`Logs!A1:C1`,
-        ['=lambda(x,x)(now())', name, item, itemList, 'RETURN', quantity]);
+        ['=lambda(x,x)(now())', name, region, item, itemList, 'RETURN', quantity]);
 
     res.render('submit', {message: `Returned ${item} x ${quantity}`});
 });

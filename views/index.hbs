@@ -31,8 +31,9 @@
         let buttonList = document.getElementsByTagName('button');
 
         let name = document.getElementById('name-input').value;
+        let region = document.getElementById('region-input').value;
         let quantity = Number(document.getElementById('quantity-input').value);
-        if(name === "" || quantity < 1 || isNaN(quantity) || quantity === 0){
+        if(name === "" || region === "" || quantity < 1 || isNaN(quantity) || quantity === 0){
             for (let buttonListElement of buttonList) {
                 buttonListElement.disabled = true;
             }
@@ -64,6 +65,14 @@
                 <input type="hidden" name="itemAvailableQuantity" value="{{itemAvailableQuantity}}">
                 <input type="hidden" name="itemBorrowedQuantity" value="{{itemBorrowedQuantity}}">
                 <input type="hidden" name="itemList" value="{{itemList}}">
+
+                <div class=""><label class="text-sm font-medium">
+                    <p class="">Region:</p>
+                </label>
+                    <div class="relative mt-1"><label class="">
+                        <input class="w-full p-3 pr-12 text-sm shadow-sm border border-gray-200 rounded-global dark:bg-slate-900 dark:border-gray-700"
+                               name="region" placeholder="" id="region-input" oninput="inputValidation()"/></label></div>
+                </div>
 
                 <div class=""><label class="text-sm font-medium">
                     <p class="">Name:</p>
