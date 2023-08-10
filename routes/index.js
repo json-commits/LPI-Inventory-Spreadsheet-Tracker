@@ -173,4 +173,12 @@ router.post('/add', async function (req, res, next) {
 
     res.render('submit', {message: `Added `});
 });
+
+
+router.get('/person', async function (req, res, next) {
+    const person = req.query['person'];
+    await sheets.setRangeData(`PersonList!B4`, [person]);
+    res.redirect(`https://docs.google.com/spreadsheets/d/1QXuAP7bSBvSMdeAk45DI76izq_Zd1CR1puWgIWUiIbQ/view#gid=36223973`)
+});
+
 module.exports = router;
