@@ -50,8 +50,8 @@ router.get('/', async function (req, res, next) {
 router.post('/borrow', async function (req, res, next) {
     const item = req.body.item;
     const itemList = req.body.itemList;
-    const name = req.body.name;
-    const region = req.body.region;
+    const name = req.body.name.toUpperCase();
+    const region = req.body.region.toUpperCase();
     const quantity = Number(req.body.quantity);
     const foundItemIndex = Number(req.body.foundItemIndex) + 1;
     const itemBorrowedQuantity = Number(req.body.itemBorrowedQuantity);
@@ -67,8 +67,8 @@ router.post('/borrow', async function (req, res, next) {
 router.post('/release', async function (req, res, next) {
     const item = req.body.item;
     const itemList = req.body.itemList;
-    const name = req.body.name;
-    const region = req.body.region;
+    const name = req.body.name.toUpperCase();
+    const region = req.body.region.toUpperCase();
     const quantity = Number(req.body.quantity);
     const foundItemIndex = Number(req.body.foundItemIndex) + 1;
     const itemAvailableQuantity = Number(req.body.itemAvailableQuantity);
@@ -83,8 +83,8 @@ router.post('/release', async function (req, res, next) {
 router.post('/return', async function (req, res, next) {
     const item = req.body.item;
     const itemList = req.body.itemList;
-    const name = req.body.name;
-    const region = req.body.region;
+    const name = req.body.name.toUpperCase();
+    const region = req.body.region.toUpperCase();
     const quantity = Number(req.body.quantity);
     const foundItemIndex = Number(req.body.foundItemIndex) + 1;
     const itemBorrowedQuantity = Number(req.body.itemBorrowedQuantity);
